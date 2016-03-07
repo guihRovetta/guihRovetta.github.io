@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+    <link rel="import" href="sense-recognition.html">
+    <link rel="import" href="sense-synthesis.html">
+</head>
+
+<body>
+    <!--<sense-recognition id="recognition-element"></sense-recognition>
+    <button id="recognition-form">START</button>
+    <textarea id="recognition-input"></textarea>-->
+
+    <sense-synthesis id="player-element"></sense-synthesis>
+    <button id="player-form">START</button>
+    <input id="player-input">
+</body>
+
+<script>
+    /*var form = document.querySelector('#recognition-form');
+                                    var input = document.querySelector('#recognition-input');
+                                    var element = document.querySelector('#recognition-element');
+
+                                    form.addEventListener('click', function (e) {
+                                        e.preventDefault();
+                                        element.start();
+                                    });
+
+                                    element.addEventListener('result', function (e) {
+                                        input.textContent = e.detail.result;
+                                    });*/
+
+    var form = document.querySelector('#player-form'),
+        input = document.querySelector('#player-input'),
+        element = document.querySelector('#player-element');
+
+    input.addEventListener('input', function (e) {
+        element.setAttribute('text', input.value);
+    });
+
+    form.addEventListener('click', function (e) {
+        e.preventDefault();
+        element.speak();
+    });
+</script>
+
+</html>

@@ -1,0 +1,358 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+
+<dom-module id="sense-orientation">
+    <style>
+        * {
+            vertical-align: middle;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .special {
+            font-size: 16px;
+        }
+        
+        .cardcolor {
+            background-color: #690085;
+            color: white;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        .orange {
+            background-color: #ea641a;
+            color: white;
+        }
+        
+        .blue {
+            background-color: #1f5cb1;
+            color: white;
+        }
+        
+        .green {
+            background-color: #2da444;
+            color: white;
+        }
+        
+        .white {
+            background-color: #ffffff;
+            color: black;
+        }
+        
+        .pink {
+            background-color: #fb7de9;
+            color: black;
+        }
+        
+        paper-card {
+            margin: 5px;
+            vertical-align: middle;
+            text-align: center;
+            width: 300px;
+        }
+        
+        #primeiro {
+            background-color: #475f83;
+            color: white;
+        }
+        
+        #segundo {
+            background-color: #80c6e7;
+            color: white;
+        }
+        
+        .centralizar {
+            margin: 3px;
+        }
+    </style>
+
+    <template>
+        <div class="horizontal layout wrap central">
+            <div class="horizontal layout wrap central">
+                <div class="flex centralizar">
+                    <paper-card heading="Encontre a massa atômica do elemento: {{selement.nome}}" class="pink"></paper-card>
+                    <paper-button toggles raised on-click="getOrientation" id="primeiro">GET MY ORIENTATION</paper-button>
+                    <paper-button toggles raised on-click="start" id="segundo">INICIAR</paper-button>
+                </div>
+            </div>
+
+            <div class="horizontal layout wrap central">
+                <paper-card heading="Gamma (Y)" class="orange flex">
+                    <div class="card-actions">
+                        <div>{{getLowerLimit(lgamma)}}</div>
+                        <div id="gamma" class="special"><b>{{gamma}}</b></div>
+                        <div>{{getUpperLimit(lgamma)}}</div>
+                    </div>
+                </paper-card>
+            </div>
+
+            <div class="horizontal layout wrap central">
+                <paper-card heading="Beta (X)" class="blue flex">
+                    <div class="card-actions">
+                        <div>{{getLowerLimit(lbeta)}}</div>
+                        <div id="beta" class="special"><b>{{beta}}</b></div>
+                        <div>{{getUpperLimit(lbeta)}}</div>
+                    </div>
+                </paper-card>
+            </div>
+
+            <div class="horizontal layout wrap central">
+                <paper-card heading="Alpha (Z)" class="green flex">
+                    <div class="card-actions">
+                        <div>{{getLowerLimit(lalpha)}}</div>
+                        <div id="alpha" class="special"><b>{{alpha}}</b></div>
+                        <div>{{getUpperLimit(lalpha)}}</div>
+                    </div>
+                </paper-card>
+            </div>
+
+            <paper-dialog id="myDialog" onclick="{{toggleDialog}}" class="cardcolor">
+                <h2>Parabéns</h2>
+                <paper-dialog-scrollable>
+                    <div>Você conseguiu achar a massa atômica do elemento. Para jogar de novo aperte o botão de INICIAR.</div>
+                    <h3>{{selement.simbolo}}</h3>
+                    <h4>{{selement.nome}}</h4>
+                    <div><b>Massa Atômica: </b>{{selement.massaAtomica}}</div>
+                    <div><b>Número Atômico: </b>{{selement.numeroAtomico}}</div>
+                    <div><b>Ponto de Fusão: </b>{{selement.pontoFusao}}</div>
+                    <div><b>Ponto de Ebulição: </b>{{selement.pontoEbulicao}}</div>
+                    <div class="buttons">
+                        <paper-button dialog-dismiss toggles raised class="white">OK</paper-button>
+                    </div>
+                </paper-dialog-scrollable>
+            </paper-dialog>
+        </div>
+    </template>
+
+    <script>
+        // element registration
+        Polymer({
+            is: "sense-orientation",
+            properties: {
+                gamma: {
+                    type: Number,
+                    notify: true,
+                    observer: '_gammaChanged',
+                    reflectToAttribute: true,
+                    value: 0
+                },
+                beta: {
+                    type: Number,
+                    notify: true,
+                    observer: '_betaChanged',
+                    reflectToAttribute: true,
+                    value: 0
+                },
+                alpha: {
+                    type: Number,
+                    notify: true,
+                    observer: '_alphaChanged',
+                    reflectToAttribute: true,
+                    value: 0
+                },
+                //app properties
+                lgamma: {
+                    type: Number,
+                    notify: true,
+                    observer: '_lgammaChanged',
+                    reflectToAttribute: true,
+                    value: 0
+                },
+                lbeta: {
+                    type: Number,
+                    notify: true,
+                    observer: '_lbetaChanged',
+                    reflectToAttribute: true,
+                    value: 0
+                },
+                lalpha: {
+                    type: Number,
+                    notify: true,
+                    observer: '_lalphaChanged',
+                    reflectToAttribute: true,
+                    value: 0
+                },
+                qelements: {
+                    type: Array,
+                    value: function () {
+                        return [
+                            {
+                                nome: "Hidrogênio",
+                                massaAtomica: 1.01,
+                                numeroAtomico: 1,
+                                simbolo: "H",
+                                pontoFusao: -259,
+                                pontoEbulicao: -252
+                            },
+                            {
+                                nome: "Sódio",
+                                massaAtomica: 22.99,
+                                numeroAtomico: 11,
+                                simbolo: "Na",
+                                pontoFusao: 97.6,
+                                pontoEbulicao: 892
+                            },
+                            {
+                                nome: "Enxofre",
+                                massaAtomica: 32.06,
+                                numeroAtomico: 16,
+                                simbolo: "S",
+                                pontoFusao: 119,
+                                pontoEbulicao: 444.6
+                            },
+                            {
+                                nome: "Ouro",
+                                massaAtomica: 169.97,
+                                numeroAtomico: 79,
+                                simbolo: "Au",
+                                pontoFusao: 1063,
+                                pontoEbulicao: 2808
+                            },
+                            {
+                                nome: "Rádio",
+                                massaAtomica: 226,
+                                numeroAtomico: 88,
+                                simbolo: "Ra",
+                                pontoFusao: 700,
+                                pontoEbulicao: 1140
+                            },
+                            {
+                                nome: "Ferro",
+                                massaAtomica: 55.85,
+                                numeroAtomico: 26,
+                                simbolo: "Fe",
+                                pontoFusao: 1536,
+                                pontoEbulicao: 3000
+                            }
+                        ];
+                    }
+                },
+                confirm: {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                },
+                selement: {
+                    type: Object,
+                    notify: true,
+                    value: function () {
+                        return {
+                            nome: "",
+                            massaAtomica: 999,
+                            numeroAtomico: 999,
+                            símbolo: "NaN",
+                            pontoFusao: 999,
+                            pontoEbulicao: 999
+                        };
+                    }
+                }
+            },
+
+            //observers for gamma, beta and alpha
+            _gammaChanged: function (newValue, oldValue) {
+                this.gamma = newValue;
+                this.verifyNumbers(this.gamma, this.lgamma, "gamma");
+            },
+
+            _betaChanged: function (newValue, oldValue) {
+                this.beta = newValue;
+                this.verifyNumbers(this.beta, this.lbeta, "beta");
+            },
+
+            _alphaChanged: function (newValue, oldValue) {
+                this.alpha = newValue;
+                this.verifyNumbers(this.alpha, this.lalpha, "alpha");
+            },
+
+            _lgammaChanged: function (newValue, oldValue) {
+                this.lgamma = newValue;
+            },
+
+            _lbetaChanged: function (newValue, oldValue) {
+                this.lbeta = newValue;
+            },
+
+            _lalphaChanged: function (newValue, oldValue) {
+                this.lalpha = newValue;
+            },
+
+            //function to get actual position
+            getOrientation: function () {
+                if (window.DeviceOrientationEvent) {
+                    window.addEventListener('deviceorientation', this._onShow.bind(this), false);
+                } else {
+                    console.log("O seu browser não possui esse recurso");
+                }
+            },
+
+            //function success
+            _onShow: function (event) {
+                this.gamma = event.gamma;
+                this.beta = event.beta;
+                this.alpha = event.alpha;
+
+                this.fire('motion', {
+                    gamma: this.gamma,
+                    beta: this.beta,
+                    alpha: this.alpha
+                });
+            },
+
+            //function failed
+            _onError: function (err) {
+                this.fire('Error for debug - ', {
+                    error: err.code + ' : ' + err.message
+                });
+            },
+
+            //app functions
+
+            start: function () {
+                this.confirm = false;
+                var element = this.getRandomElement(this.qelements);
+                if (element.massaAtomica >= -90 && element.massaAtomica <= 90) {
+                    this.lgamma = element.massaAtomica;
+                }
+                if (element.massaAtomica >= -180 && element.massaAtomica <= 180) {
+                    this.lbeta = element.massaAtomica;
+                }
+                if (element.massaAtomica >= 0 && element.massaAtomica <= 360) {
+                    this.lalpha = element.massaAtomica;
+                }
+            },
+
+            getLowerLimit: function (number) {
+                return (number - 20);
+            },
+
+            getUpperLimit: function (number) {
+                return (number + 20);
+            },
+
+            verifyNumbers: function (number, limit, id) {
+                if ((number <= (limit + 2)) && (number >= (limit - 2)) && this.confirm == false) {
+                    document.getElementById(id).style.color = "green";
+                    this.confirm = true;
+                    this.$.myDialog.toggle();
+                } else {
+                    document.getElementById(id).style.color = "black";
+                }
+            },
+
+            getRandomElement: function (array) {
+                var number = this.getRandomArbitrary(0, array.length);
+                this.selement = array[number];
+                return array[number];
+            },
+
+            getRandomArbitrary: function (min, max) {
+                return Math.floor(Math.random() * (max - min)) + min;
+            }
+        });
+    </script>
+</dom-module>

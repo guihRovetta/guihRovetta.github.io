@@ -1,0 +1,94 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<dom-module id="modo-cards">
+    <template>
+        <style>
+            :host {
+                height: 100%;
+            }
+            
+            paper-card {
+                max-width: 500px;
+                min-width: 300px;
+                width: 100%;
+            }
+            
+            .centralizar {
+                text-align: center;
+                vertical-align: middle;
+                margin: 20px;
+            }
+            
+            #orange {
+                background-color: #e67e22;
+            }
+            
+            #blue {
+                background-color: #3498db;
+            }
+            
+            #red {
+                background-color: #bc243c;
+            }
+            
+            #purple {
+                background-color: #9b59b6;
+            }
+            
+            .white {
+                background-color: #ffffff;
+            }
+        </style>
+
+        <div class="flex centralizar">
+            <paper-card heading="{{primeiro}}" class="alinhar mode" id="{{segundo}}">
+                <template is="dom-if" if="{{mais}}">
+                    <div class="card-content">{{terceiro}}</div>
+                </template>
+
+                <div class="card-actions">
+                    <paper-button class="white"><a href="{{quarto}}">Try</a></paper-button>
+                    <paper-button toggles raised class="white" on-click="showMore">Details</paper-button>
+                </div>
+            </paper-card>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'modo-cards',
+            properties: {
+                primeiro: {
+                    type: String,
+                    notify: true
+                },
+                segundo: {
+                    type: String,
+                    notify: true
+                },
+                terceiro: {
+                    type: String,
+                    notify: true
+                },
+                quarto: {
+                    type: String,
+                    notify: true
+                },
+                mais: {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                }
+            },
+            showMore: function () {
+                if (this.mais) {
+                    this.mais = false;
+                } else {
+                    this.mais = true;
+                }
+            }
+        });
+    </script>
+</dom-module>

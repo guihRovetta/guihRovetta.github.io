@@ -1,0 +1,42 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="sense-vibrate">
+    <style>
+
+    </style>
+
+    <template>
+        <button on-click="startVibration">VIBRATE</button>
+    </template>
+
+    <script>
+        // element registration
+        Polymer({
+            is: "sense-vibrate",
+            properties: {
+                duration: {
+                    type: Number,
+                    notify: true,
+                    observer: '_durationChanged',
+                    reflectToAttribute: true,
+                    value: 1000
+                }
+            },
+
+            _durationChanged: function (newValue, oldValue) {
+                this.duration = newValue;
+            },
+
+            startVibration: function () {
+                var supportsVibrate = "vibrate" in navigator;
+                if (supportsVibrate) {
+                    navigator.vibrate(1000);
+                    console.log('funcionou');
+                } else {
+                    alert('erro');
+                }
+            }
+
+        });
+    </script>
+</dom-module>

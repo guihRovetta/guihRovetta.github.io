@@ -1,0 +1,66 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<dom-module id="lista-cards">
+    <template>
+        <style>
+            :host {
+                height: 100%;
+            }
+            
+            paper-card {
+                max-width: 500px;
+                min-width: 300px;
+                width: 100%;
+                text-align: center;
+                vertical-align: middle;
+            }
+            
+            .centralizar {
+                text-align: center;
+            }
+        </style>
+
+
+        <template is="dom-repeat" items="{{opcoes}}">
+            <div class="flex centralizar">
+                <paper-card heading="{{item.primeiro}}" image="{{item.segundo}}" class="alinhar">
+                    <div class="card-content">{{item.terceiro}}</div>
+                    <div class="card-actions">
+                        <paper-button><a href="{{item.quarto}}">Visitar</a>
+                        </paper-button>
+                    </div>
+                </paper-card>
+            </div>
+        </template>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'lista-cards',
+            ready: function () {
+                this.opcoes = [
+                    {
+                        primeiro: "Geografia",
+                        segundo: "img/startup.png",
+                        terceiro: "Aprenda um pouco mais sobre a região do Vale do Paraíba, através de informações das principais cidades.",
+                        quarto: "geografia.html"
+                    },
+                    {
+                        primeiro: "Química",
+                        segundo: "img/lab.png",
+                        terceiro: "Aprenda um pouco mais sobre alguns elementos químicos de um modo totalmente diferente do convencional.",
+                        quarto: "quimica.html"
+                    },
+                    {
+                        primeiro: "Inglês",
+                        segundo: "img/book.png",
+                        terceiro: "Treine sua pronúncia de inglês através de um jogo simples porém muito eficiente, não importa seu nível de inglês.",
+                        quarto: "ingles.html"
+                    }
+                ];
+            }
+        });
+    </script>
+</dom-module>

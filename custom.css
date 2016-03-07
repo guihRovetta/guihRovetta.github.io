@@ -1,0 +1,46 @@
+body {
+    margin: 0px !important;
+    background-image: url('img/pattern.jpg');
+}
+
+.central {
+    width: 100%;
+}
+
+.alinhar {
+    margin: 8px;
+}
+
+a:link {
+    text-decoration: none;
+    color: #000000;
+}
+
+a:visited {
+    color: #000000;
+}
+
+* {
+    font-family: 'Roboto', 'Noto', sans-serif;
+}
+
+.centralizar {
+    text-align: center;
+    vertical-align: middle;
+    margin: 20px;
+}
+
+.posicionamento {
+    min-width: 300px;
+    width: 100%;
+    max-width: 600px;
+}
+
+paper-icon-button.giant {
+    width: 60px;
+    height: 60px;
+}
+
+#help {
+    background-color: #e67e22;
+}

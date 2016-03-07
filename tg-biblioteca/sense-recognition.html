@@ -1,0 +1,73 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="sense-recognition">
+    <style></style>
+
+    <template></template>
+
+    <script>
+        // element registration
+        Polymer({
+            is: 'sense-recognition',
+            properties: {
+                language: {
+                    type: String,
+                    value: 'en-US',
+                    observer: '_languageChanged',
+                    notify: true
+                },
+                text: {
+                    type: String,
+                    value: ''
+                }
+            },
+
+            created: function () {
+                var speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (speech !== undefined) {
+                    this.recognition = new speech();
+                } else {
+                    console.error('Your browser does not support the Web Speech API');
+                }
+            },
+
+            ready: function () {
+                this.recognition.continuous = true;
+                this.recognition.interimResults = false;
+
+                var aux = this;
+                this.recognition.addEventListener('start', function (event) {
+                    aux.fire('start', this);
+                });
+
+                this.recognition.addEventListener('end', function (event) {
+                    aux.fire('end', this);
+                });
+
+                this.recognition.addEventListener('error', function (event) {
+                    aux.fire('error', this);
+                });
+
+                this.recognition.addEventListener('result', function (event) {
+                    for (var i = event.resultIndex; i < event.results.length; ++i) {
+                        aux.text += event.results[i][0].transcript;
+                        event.result = aux.text;
+                    }
+                    aux.fire('result', event);
+                });
+            },
+
+            _languageChanged: function () {
+                this.recognition.lang = this.language;
+            },
+
+            start: function () {
+                this.recognition.start();
+            },
+
+            stop: function () {
+                this.recognition.stop();
+            }
+        });
+    </script>
+</dom-module>

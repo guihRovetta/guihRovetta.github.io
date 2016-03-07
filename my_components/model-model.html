@@ -1,0 +1,341 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<link rel="import" href="../tg-biblioteca/sense-recognition.html">
+<script src="../script/jquery-2.2.1.min.js"></script>
+
+<dom-module id="model-model">
+    <template>
+        <style>
+            :host {
+                height: 100%;
+            }
+            
+            paper-card {
+                max-width: 500px;
+                min-width: 300px;
+                width: 100%;
+            }
+            
+            .centralizar {
+                text-align: center;
+                vertical-align: middle;
+                margin: 20px;
+            }
+            
+            .blink_me {
+                animation: blinker 1s linear infinite;
+                color: red;
+            }
+            
+            @keyframes blinker {
+                50% {
+                    opacity: 0.0;
+                }
+            }
+            
+            #toast-error,
+            #toast-next {
+                --paper-toast-background-color: #bc243c;
+                --paper-toast-color: white;
+            }
+            
+            #toast-hit,
+            #toast-end {
+                --paper-toast-background-color: #40bc86;
+                --paper-toast-color: white;
+            }
+            
+            .bigger {
+                font-size: 20px;
+            }
+            
+            .bigger div {
+                margin: 8px;
+            }
+            
+            #orange {
+                background-color: #e67e22;
+            }
+            
+            #blue {
+                background-color: #3498db;
+            }
+            
+            #red {
+                background-color: #bc243c;
+            }
+            
+            #purple {
+                background-color: #9b59b6;
+            }
+            
+            #white {
+                background-color: #ffffff;
+            }
+        </style>
+
+        <sense-recognition id="sense-recognition"></sense-recognition>
+        <div class="horizontal layout wrap central">
+            <div class="flex centralizar">
+                <paper-card heading="{{title}}" id="{{color}}" class="posicionamento">
+                    <div class="card-content bigger">
+                        <template is="dom-if" if="{{image}}">
+                            <template is="dom-repeat" items="{{imgs}}">
+                                <img src="{{item.src}}">
+                            </template>
+                        </template>
+                        <template is="dom-if" if="{{!image}}">
+                            <div><b>Current:</b></div>
+                            <div>{{current}}</div>
+                        </template>
+                        <div><b>Spoken:</b></div>
+                        <div>{{spoken}}</div>
+                        <div><b>Score:</b></div>
+                        <div>{{score}}</div>
+                    </div>
+                    <div class="card-actions">
+                        <a href="../ingles.html">
+                            <paper-icon-button icon="home" id="home" class="giant"></paper-icon-button>
+                        </a>
+                        <paper-tooltip for="home" offset="0">Return to the English mode menu</paper-tooltip>
+                        <paper-icon-button icon="av:mic" id="button-mic" class="giant" on-click="spoke"></paper-icon-button>
+                        <paper-tooltip for="button-mic" offset="0">Pronounce the text above</paper-tooltip>
+                        <paper-icon-button icon="check" id="button-confirm" class="giant" on-click="confirm"></paper-icon-button>
+                        <paper-tooltip for="button-confirm" offset="0">Confirm the spoken text</paper-tooltip>
+                        <paper-icon-button icon="clear" id="button-clear" class="giant" on-click="clear"></paper-icon-button>
+                        <paper-tooltip for="button-clear" offset="0">Clear the spoken text</paper-tooltip>
+                        <paper-icon-button icon="arrow-forward" id="button-next" class="giant" on-click="next"></paper-icon-button>
+                        <paper-tooltip for="button-next" offset="0">Next text, you will lose 50 points</paper-tooltip>
+                    </div>
+                </paper-card>
+            </div>
+        </div>
+
+        <paper-toast id="toast-error" text="You missed try again with the right pronounces"></paper-toast>
+        <paper-toast id="toast-hit" text="Congratulations you hit, try to hit the following"></paper-toast>
+        <paper-toast id="toast-next" text="You do not have enough points to skip the current"></paper-toast>
+        <paper-toast id="toast-end" text="Congratulations you got all the words, try a hard way"></paper-toast>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'model-model',
+            properties: {
+                title: {
+                    type: String,
+                    notify: true,
+                    observer: '_titleChanged',
+                    reflectToAttribute: true,
+                    value: "Mode"
+                },
+                color: {
+                    type: String,
+                    notify: true,
+                    observer: '_colorChanged',
+                    reflectToAttribute: true,
+                    value: "white"
+                },
+                current: {
+                    type: String,
+                    notify: true,
+                    observer: '_currentChanged',
+                    reflectToAttribute: true,
+                    value: ""
+                },
+                spoken: {
+                    type: String,
+                    notify: true,
+                    observer: '_spokenChanged',
+                    reflectToAttribute: true,
+                    value: ""
+                },
+                score: {
+                    type: Number,
+                    notify: true,
+                    observer: '_scoreChanged',
+                    reflectToAttribute: true,
+                    value: 500
+                },
+                speaking: {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                },
+                image: {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                },
+                myarray: {
+                    type: Array
+                },
+                imgs: {
+                    type: Array,
+                    notify: true,
+                    observer: '_imgsChanged',
+                    reflectToAttribute: true,
+                }
+            },
+
+            _titleChanged: function (newValue, oldValue) {
+                this.title = newValue;
+            },
+
+            _colorChanged: function (newValue, oldValue) {
+                this.color = newValue;
+            },
+
+            _currentChanged: function (newValue, oldValue) {
+                this.current = newValue;
+            },
+
+            _spokenChanged: function (newValue, oldValue) {
+                this.spoken = newValue;
+            },
+
+            _scoreChanged: function (newValue, oldValue) {
+                this.score = newValue;
+            },
+
+            _imgsChanged: function (newValue, oldValue) {
+                this.imgs = newValue;
+            },
+
+            arrayItem: function (change, index, path) {
+                return this.get(path, change.base[index]);
+            },
+
+            ready: function () {
+                this.random();
+            },
+
+            spoke: function () {
+                var element = document.querySelector('#sense-recognition');
+                var buttonMic = document.querySelector('#button-mic');
+                var aux = this;
+
+                if (this.speaking) {
+                    this.speaking = false;
+                    element.stop();
+                    buttonMic.classList.remove("blink_me");
+                    this.updateStyles();
+                } else {
+                    this.speaking = true;
+                    element.start();
+                    buttonMic.className += " blink_me";
+                    this.updateStyles();
+                }
+
+                element.addEventListener('result', function (e) {
+                    aux.spoken = e.detail.result;
+                });
+            },
+
+            confirm: function () {
+                var toastError = document.querySelector('#toast-error');
+                var toastHit = document.querySelector('#toast-hit');
+                var toastEnd = document.querySelector('#toast-end');
+                var element = document.querySelector('#sense-recognition');
+                var buttonConfirm = document.querySelector('#button-confirm');
+                var buttonNext = document.querySelector('#button-next');
+
+                if (this.spoken.toLowerCase() == this.current.toLowerCase()) {
+                    this.score += 100;
+                    element.text = "";
+                    this.spoken = "";
+                    toastHit.open();
+
+                    this.find();
+
+                    if (this.myarray.length > 0) {
+                        this.random();
+                    } else {
+                        toastEnd.open();
+                        this.current = "";
+                        buttonConfirm.disabled = true;
+                        buttonNext.disabled = true;
+                    }
+
+                } else {
+                    element.text = "";
+                    this.spoken = "";
+                    toastError.open();
+                }
+            },
+
+            clear: function () {
+                var element = document.querySelector('#sense-recognition');
+                element.text = "";
+                this.spoken = "";
+            },
+
+            next: function () {
+                var toastNext = document.querySelector('#toast-next');
+                var element = document.querySelector('#sense-recognition');
+
+                if (this.score > 0) {
+                    this.score -= 50;
+                    element.text = "";
+                    this.spoken = "";
+                    this.random();
+                } else {
+                    toastNext.open();
+                }
+            },
+
+            random: function () {
+                var size = this.myarray.length - 1;
+                var randomNumber = Math.floor((Math.random() * (size - 0 + 1) + 0));
+                this.current = this.myarray[randomNumber].name;
+
+                if (this.image) {
+                    this.getimages();
+                }
+            },
+
+            find: function () {
+                var size = this.myarray.length - 1;
+                var index;
+                for (i = 0; i <= size; i++) {
+                    if (this.current == this.myarray[i].name) {
+                        index = i;
+                        break;
+                    }
+                }
+                this.myarray.splice(index, 1);
+            },
+
+            getimages: function () {
+                var aux = this;
+                aux.imgs = [{
+                    "name": "",
+                    "src": ""
+                }];
+
+                $.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?", {
+                        tags: aux.current,
+                        tagmode: "any",
+                        format: "json",
+                        machine_tags: "dc:"
+                    },
+                    function (data) {
+                        $.each(data.items, function (i, item) {
+                            aux.unshift('imgs', {
+                                name: aux.current,
+                                src: item.media.m
+                            });
+                            if (i == 3) return false;
+                        });
+                    });
+            }
+        });
+    </script>
+</dom-module>

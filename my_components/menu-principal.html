@@ -1,0 +1,68 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+
+<dom-module id="menu-principal">
+    <template>
+        <style>
+            :host {
+                height: 100%;
+            }
+            /*.content {
+                height: 2000px;
+            }*/
+            
+            a:link.menu {
+                color: white;
+            }
+            
+            a:visited.menu {
+                color: white;
+            }
+        </style>
+
+        <paper-header-panel class="flex" mode="waterfall">
+            <paper-toolbar>
+                <paper-menu-button>
+                    <paper-icon-button icon="menu" class="dropdown-trigger"></paper-icon-button>
+                    <paper-menu class="dropdown-content">
+                        <paper-item><a href="../home.html">Home</a></paper-item>
+                        <paper-item><a href="../geografia.html">Geografia</a></paper-item>
+                        <paper-item><a href="../quimica.html">Química</a></paper-item>
+                        <paper-item><a href="../ingles.html">Inglês</a></paper-item>
+                    </paper-menu>
+                </paper-menu-button>
+                <span class="title">TG - Demonstração</span>
+                <iron-media-query query="(min-width: 730px)" query-matches="{{queryMatches}}"></iron-media-query>
+                <template is="dom-if" if="{{queryMatches}}">
+                    <paper-button><a href="../home.html" class="menu">Home</a></paper-button>
+                    <paper-button><a href="../geografia.html" class="menu">Geografia</a></paper-button>
+                    <paper-button><a href="../quimica.html" class="menu">Química</a></paper-button>
+                    <paper-button><a href="../ingles.html" class="menu">Inglês</a></paper-button>
+                </template>
+            </paper-toolbar>
+            <div class="content fit">
+                <content id="myContent"></content>
+            </div>
+        </paper-header-panel>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'menu-principal',
+            ready: function () {
+                /*var distributed = this.getContentChildren('#myContent');
+                console.log(distributed.length);*/
+            }
+        });
+    </script>
+</dom-module>

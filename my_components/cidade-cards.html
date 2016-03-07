@@ -1,0 +1,120 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+
+<dom-module id="cidade-cards">
+    <template>
+        <style>
+            :host {
+                height: 100%;
+                text-align: center;
+            }
+            
+            paper-card {
+                max-width: 500px;
+                min-width: 300px;
+                width: 100%;
+                text-align: center;
+                vertical-align: middle;
+            }
+            
+            div {
+                margin: 5px;
+            }
+        </style>
+
+        <div class="flex">
+            <paper-card heading="{{primeiro}}" class="alinhar">
+                <div class="card-content">
+                    <content id="myContent"></content>
+                    <div><b>Descrição: </b>{{segundo}}</div>
+                    <template is="dom-if" if="{{mais}}">
+                        <div><b>População: </b>{{terceiro}}</div>
+                        <div><b>Área: </b>{{quarto}}</div>
+                        <div><b>Elevação: </b>{{quinto}}</div>
+                        <div><b>Fundação: </b>{{sexto}}</div>
+                        <div><b>Clima: </b>{{setimo}}</div>
+                        <div><b>PIB: </b>{{oitavo}}</div>
+                        <div><b>PIB per Capita: </b>{{nono}}</div>
+                        <div>Informações retiradas dos sites
+                            <a href="{{decimo}}">Wikipedia</a> e
+                            <a href="{{dprimeiro}}">Prefeitura Municipal de {{primeiro}}</a>
+                        </div>
+                    </template>
+                </div>
+                <div class="card-actions">
+                    <paper-button on-click="showMore">Mostrar Mais</paper-button>
+                </div>
+            </paper-card>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'cidade-cards',
+            properties: {
+                primeiro: {
+                    type: String,
+                    notify: true
+                },
+                segundo: {
+                    type: String,
+                    notify: true
+                },
+                terceiro: {
+                    type: String,
+                    notify: true
+                },
+                quarto: {
+                    type: String,
+                    notify: true
+                },
+                quinto: {
+                    type: String,
+                    notify: true
+                },
+                sexto: {
+                    type: String,
+                    notify: true
+                },
+                setimo: {
+                    type: String,
+                    notify: true
+                },
+                oitavo: {
+                    type: String,
+                    notify: true
+                },
+                nono: {
+                    type: String,
+                    notify: true
+                },
+                decimo: {
+                    type: String,
+                    notify: true
+                },
+                dprimeiro: {
+                    type: String,
+                    notify: true
+                },
+                mais: {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                }
+            },
+            ready: function () {
+                var distributed = this.getContentChildren('#myContent');
+                console.log(distributed.length);
+            },
+            showMore: function () {
+                if (this.mais) {
+                    this.mais = false;
+                } else {
+                    this.mais = true;
+                }
+            }
+        });
+    </script>
+</dom-module>

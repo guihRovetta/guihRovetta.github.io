@@ -1,0 +1,101 @@
+<!--<link rel="import" href="http://www.polymer-project.org/1.0/samples/components/polymer/polymer.html">-->
+<link rel="import" href="../bower_components/google-map/google-map.html">
+
+<dom-module id="sense-geolocation">
+    <style>
+        google-map {
+            text-align: center;
+            vertical-align: middle;
+            margin: auto;
+            min-height: 200px;
+            min-width: 200px;
+            max-height: 300px;
+            /*max-width: 300px;*/
+            height: 100%;
+            width: 100%;
+        }
+        
+        div {
+            margin: 5px;
+        }
+    </style>
+
+    <template>
+        <!--<h1>Position:</h1>-->
+        <template is="dom-if" if="{{mapa}}">
+            <google-map latitude="{{lat}}" longitude="{{long}}" zoom="12"></google-map>
+        </template>
+        <br>
+        <button on-click="getPosition">GET POSITION</button>
+        <br>
+        <div>{{getCoord(lat, long)}}</div>
+    </template>
+
+    <script>
+        // element registration
+        Polymer({
+            is: "sense-geolocation",
+            properties: {
+                lat: {
+                    type: Number,
+                    notify: true,
+                    observer: '_latChanged',
+                    reflectToAttribute: true,
+                    value: -23.1621341
+                },
+                long: {
+                    type: Number,
+                    notify: true,
+                    observer: '_longChanged',
+                    reflectToAttribute: true,
+                    value: -45.7974797
+                },
+                mapa: {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                }
+            },
+
+            //observers for lat and long
+            _latChanged: function (newValue, oldValue) {
+                this.lat = newValue;
+            },
+
+            _longChanged: function (newValue, oldValue) {
+                this.long = newValue;
+            },
+
+            //print and bind to view
+            getCoord: function (lat, long) {
+                return "LAT = " + this.lat + " e LONG = " + this.long;
+            },
+
+            //function to get actual position
+            getPosition: function () {
+                var options = {
+                    timeout: 60000
+                };
+                navigator.geolocation.getCurrentPosition(this._onShow.bind(this), this._onError.bind(this), options);
+            },
+
+            //function success
+            _onShow: function (pos) {
+                this.lat = pos.coords.latitude;
+                this.long = pos.coords.longitude;
+                this.fire('geo-response', {
+                    latitude: this.lat,
+                    longitude: this.long,
+                    position: pos
+                });
+            },
+
+            //function failed
+            _onError: function (err) {
+                this.fire('Error for debug - ', {
+                    error: err.code + ' : ' + err.message
+                });
+            }
+        });
+    </script>
+</dom-module>

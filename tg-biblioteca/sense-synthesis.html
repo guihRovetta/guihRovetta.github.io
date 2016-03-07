@@ -1,0 +1,70 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="sense-synthesis">
+    <style></style>
+
+    <template></template>
+
+    <script>
+        // element registration
+        Polymer({
+            is: 'sense-synthesis',
+            properties: {
+                language: {
+                    type: String,
+                    value: 'en-US',
+                    observer: '_languageChanged',
+                    notify: true
+                },
+                text: {
+                    type: String,
+                    value: 'Nothing will stand in our way I will finish what you started.',
+                    observer: '_textChanged',
+                    notify: true
+                }
+            },
+
+            created: function () {
+                if ('speechSynthesis' in window) {
+                    this.synthesis = new SpeechSynthesisUtterance();
+                } else {
+                    console.error('Your browser does not support the Web Speech API');
+                }
+            },
+
+            ready: function () {
+                this._languageChanged();
+                this._textChanged();
+
+                var aux = this;
+                this.synthesis.addEventListener('start', function (event) {
+                    aux.fire('start', this);
+                });
+
+                this.synthesis.addEventListener('end', function (event) {
+                    aux.fire('end', this);
+                });
+
+                this.synthesis.addEventListener('error', function (event) {
+                    aux.fire('error', this);
+                });
+            },
+
+            _languageChanged: function () {
+                this.synthesis.lang = this.language;
+            },
+
+            _textChanged: function () {
+                this.synthesis.text = this.text;
+            },
+
+            speak: function () {
+                window.speechSynthesis.speak(this.synthesis);
+            },
+
+            cancel: function () {
+                window.speechSynthesis.cancel();
+            }
+        });
+    </script>
+</dom-module>

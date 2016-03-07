@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="TG - Inglês - Help Mode">
+    <title>TG - Inglês - Help Mode</title>
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+    <link rel="import" href="../bower_components/paper-card/paper-card.html">
+    <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+    <link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+    <link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+    <link rel="import" href="../bower_components/iron-icons/av-icons.html">
+
+    <link rel="import" href="../my_components/menu-principal.html">
+    <link rel="import" href="../tg-biblioteca/sense-synthesis.html">
+
+    <link rel="stylesheet" href="../custom.css">
+</head>
+
+
+<body class="fullbleed layout vertical">
+    <menu-principal>
+        <sense-synthesis id="sense-synthesis"></sense-synthesis>
+        <div class="horizontal layout wrap central">
+            <div class="flex centralizar">
+                <paper-card heading="Help Mode" id="help" class="posicionamento">
+                    <div class="card-content">
+                        <paper-textarea label="Digit your text here" id="textarea-input"></paper-textarea>
+                    </div>
+                    <div class="card-actions">
+                        <a href="../ingles.html">
+                            <paper-icon-button icon="home" id="home" class="giant"> </paper-icon-button>
+                        </a>
+                        <paper-tooltip for="home" offset="0">Return to the English mode menu</paper-tooltip>
+                        <paper-icon-button icon="av:volume-up" id="button-sound" class="giant"></paper-icon-button>
+                        <paper-tooltip for="button-sound" offset="0">Listen to the pronunciation of what you wrote</paper-tooltip>
+                    </div>
+                </paper-card>
+            </div>
+        </div>
+    </menu-principal>
+</body>
+
+<script src="script-help.js"></script>
+
+</html>
