@@ -1,0 +1,29 @@
+.space {
+    margin: 4em 0em 3em;
+}
+
+.footer {
+    margin: 5em 0em 0em !important;
+    padding: 5em 0em !important;
+}
+
+.uppercase {
+    text-transform: uppercase !important;
+}
+
+.top-margin {
+    margin-top: 5em;
+}
+
+.top-margin-text {
+    margin-top: 8em;
+}
+
+.text-important {
+    color: #FFE21F;
+}
+
+.greyeffect {
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+}
