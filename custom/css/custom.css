@@ -16,7 +16,11 @@
 }
 
 .top-margin-text {
-    margin-top: 8em;
+    margin-top: 8em !important;
+}
+
+.middle-margin {
+    margin-top: 4em !important;
 }
 
 .text-important {
@@ -26,4 +30,9 @@
 .greyeffect {
     -webkit-filter: grayscale(100%);
     filter: grayscale(100%);
+}
+
+.barra {
+    margin-top: 0rem !important;
+    margin-bottom: 0rem !important;
 }

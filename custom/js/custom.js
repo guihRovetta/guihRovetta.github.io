@@ -131,6 +131,18 @@ $(document).ready(function () {
         titulo: "Zenger",
         imagem: "../img/logo_zenger.jpg",
         tipo: "Logo"
+    }, {
+        titulo: "Gravity Concept Store",
+        imagem: "../img/logo_gravity.jpg",
+        tipo: "Logo"
+    }, {
+        titulo: "Heights Pet Hospital",
+        imagem: "../img/logo_hph.jpg",
+        tipo: "Logo"
+    }, {
+        titulo: "Nu Skin",
+        imagem: "../img/logo_nuskin.jpg",
+        tipo: "Logo"
     }];
 
     var produtos = [{
@@ -282,7 +294,7 @@ $(document).ready(function () {
             linha += '</div>';
             linha += '</div>';
             linha += '</div>';
-            linha += '<img class="ui huge image" src="' + value.imagem + '">';
+            linha += '<img class="ui huge image padrao" src="../img/default2.jpg" data-src="' + value.imagem + '">';
             linha += '</div>';
             linha += '</div>';
             linha += '</div>';
@@ -302,7 +314,7 @@ $(document).ready(function () {
 
         loja += '<div class="sixteen wide mobile eight wide tablet four wide computer column">';
         loja += '<div class="ui card">';
-        loja += '<img class="ui huge image" src="' + produto.imagem + '">';
+        loja += '<img class="ui huge image padrao" src="../img/default.jpg" data-src="' + produto.imagem + '">';
         loja += '<div class="content">';
         loja += '<div class="header">' + produto.titulo + '</div>';
         loja += '<div class="meta"><span class="date">' + produto.tipo + '</span></div>';
@@ -345,5 +357,17 @@ $(document).ready(function () {
         .transition({
             animation: 'fade down',
             duration: 600
+        });
+
+    $('.padrao')
+        .visibility({
+            type: 'image',
+            transition: 'fade in',
+            duration: 1000
+        });
+
+    $('.ui.dropdown')
+        .dropdown({
+            action: 'hide'
         });
 });
