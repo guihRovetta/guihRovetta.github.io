@@ -363,7 +363,7 @@ $(document).ready(function () {
         .visibility({
             type: 'image',
             transition: 'fade in',
-            duration: 1000
+            duration: 200
         });
 
     $('.ui.dropdown')
