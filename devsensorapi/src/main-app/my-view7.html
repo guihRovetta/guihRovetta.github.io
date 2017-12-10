@@ -1,0 +1,326 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../device-orientation/device-orientation.html">
+<link rel="import" href="../user-notification/user-notification.html">
+<link href="https://fonts.googleapis.com/css?family=Caveat+Brush" rel="stylesheet">
+
+<dom-module id="my-view7">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                padding: 10px;
+                background-image: url("/src/main-app/assets/cash_pattern.jpg");
+                background-repeat: repeat;
+                font-family: 'Caveat Brush', cursive;
+                font-size: 120%;
+            }
+            
+            .sucess {
+                --user-notification-border-color: #4CAF50;
+                --user-notification-color: #FFFFFF;
+                --user-notification-background-color: #4CAF50;
+            }
+            
+            .error {
+                --user-notification-border-color: #F44336;
+                --user-notification-color: #FFFFFF;
+                --user-notification-background-color: #F44336;
+            }
+            
+            .divLimit {
+                max-width: 900px;
+                width: 100%;
+            }
+            
+            .links {
+                text-decoration: none;
+                color: #301627;
+                font-weight: bold;
+            }                   
+            
+            .control {
+                color: #FFFFFF;
+                background-color: #301627;
+                margin: 10px;
+                width: 60px;
+                height: 60px;
+                text-align: center;
+                
+            }
+            
+            .secrets {
+                padding: 10px !important;
+                font-size: 130%;
+            }
+            
+            h1,h2 {
+                text-align: center;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .img {
+                width: 100%;
+                height: 100%;
+                max-height: 500px;                
+                max-width: 500px;
+            }
+            
+            .info {
+                font-size: 120%;
+                color: #FFFFFF;
+                background-color: #301627;
+                margin: 10px;
+                text-align: center;
+                min-width: 90px;
+            }
+            
+            #alarm{
+                vertical-align: sub;
+            }
+            
+            .feed {
+                color: #301627;
+                font-weight: bold;
+                font-size: 110%;
+            }
+            
+            paper-slider{
+                margin-top: 30px;
+                width: 100%;
+                --paper-slider-knob-color: #301627 !important;
+                --paper-slider-active-color: #301627 !important;
+            }
+            
+            .disabled {
+                color: #ffffff !important;
+                background-color: #757575 !important;
+            }
+        </style>
+
+        <div class="page horizontal center layout">
+            <div class="flex positioning vertical center layout">
+                <div class="card divLimit layout center-justified">       
+                    <h1>Safe Lock</h1>
+                    <p>Bem-vindo ao Safe Lock, um jogo em que o usuário deve movimentar o celular lentamente para achar os 3 segredos e abrir o cofre para ganhar o tesouro.</p>
+                    <p>Para isso, o usuário deve permitir o acesso à esses recursos clicando no botão com o ícone de girar logo abaixo:</p>
+                    <p>DICA: para facilitar o seu desempenho no jogo coloque o dispositivo em uma superficie plana.</p>
+                    <div class="container layout vertical center">
+                        <div class="container layout horizontal center">
+                            <paper-button raised="" class="control" id="rotate" on-click="getMyOrientation"><iron-icon icon="icons:cached"></iron-icon></paper-button>
+                            <paper-button raised="" class="control" id="reset" on-click="reset">RESET</paper-button>
+                        </div>  
+                        
+                        <div class="container layout horizontal center">
+                            <div class="card info"><iron-icon id="alarm" icon="icons:alarm"></iron-icon>{{timer}}s</div>
+                        </div>  
+                        
+                        <h1>Segredos</h1>
+                        <div class="container layout horizontal center">
+                            <template is="dom-repeat" items="{{secrets}}">
+                                <div class="card control secrets">{{item.number}}</div>
+                            </template>
+                        </div>  
+                    </div>                       
+                    <device-orientation id="orientation"></device-orientation> 
+                </div>
+
+                <div class="card divLimit container layout vertical">
+                    <div class="container layout vertical center">
+                        <template is="dom-if" if="{{image}}">
+                            <img id="vault" class="img" src="/src/main-app/assets/vault.png"> 
+                        </template>
+                        <template is="dom-if" if="{{!image}}">
+                            <img id="treasure" class="img" src="/src/main-app/assets/treasure.png"> 
+                        </template>
+                        <paper-slider disabled="" value="{{feedback}}" max="360"></paper-slider>
+                        <div class="feed">{{feedback}}</div>  
+                    </div>                          
+                </div>
+
+                <div class="card divLimit layout center-justified">       
+                    <h2>Referências - Imagem utilizada</h2>
+                    <p>A imagem do tesouro pertence ao seu respectivo dono e foi usada apenas para fins acadêmicos, para acessá-la basta clicar no link:</p>
+                    <p>Disponível em: <a href="https://icons8.com/icon/22467/treasure-chest" class="links">Treasure Chest Icon</a> Acesso em dez. 2017.</p> 
+                </div>   
+            </div>
+        </div> 
+        
+        <user-notification id="notification" class="sucess"></user-notification>                      
+  </template>
+
+    <script>
+        class MyView7 extends Polymer.Element {
+            static get is() {
+                return 'my-view7';
+            }
+            
+            static get properties() {
+                return {
+                    current: {
+                        type: Number,
+                        notify: true,
+                        observer: '_currentChanged',
+                        reflectToAttribute: true,
+                        value: 0
+                    },
+                    feedback: {
+                        type: Number,
+                        notify: true,
+                        observer: '_feedbackChanged',
+                        reflectToAttribute: true,
+                        value: 0
+                    },
+                    count: {
+                        type: Number,
+                        notify: true,
+                        observer: '_countChanged',
+                        reflectToAttribute: true,
+                        value: 0
+                    },
+                    secrets: {
+                        type: Object,
+                        notify: true,
+                        value: function() {
+                            return [];
+                        },
+                        observer: '_secretsChanged'
+                    },
+                    timer: {
+                        type: Number,
+                        notify: true,
+                        observer: '_timerChanged',
+                        reflectToAttribute: true,
+                        value: 180
+                    },
+                    image: {
+                        type: Boolean,
+                        value: true
+                    }
+                };
+            }
+            
+            _currentChanged(newValue, oldValue) {
+                this.current = newValue;
+            }
+            
+            _feedbackChanged(newValue, oldValue) {
+                this.feedback = newValue;
+            }
+            
+            _countChanged(newValue, oldValue) {
+                this.count = newValue;
+            }
+            
+            _secretsChanged(newValue, oldValue) {
+                this.secrets = newValue;
+            }
+            
+            _timerChanged(newValue, oldValue) {
+                this.timer = newValue;
+                if(this.timer == 0){
+                    clearInterval(this.intervalTimer);
+                    this.reset();
+                    this.$.notification.classList.remove("sucess");
+                    this.$.notification.classList.add("error");
+                    this.notify("Infelizmente seu tempo acabou, tente novamente com outra sequência!!");
+                }
+            }
+            
+            constructor() {
+                super();
+                this.generateSecrets();
+                this.change(0);
+            }
+            
+            connectedCallback() {
+                super.connectedCallback();  
+            } 
+            
+            generateSecrets(){
+                this.secrets = [];
+                this.count = 0;
+                for(var i = 0; i < 3; i++){
+                    this.push('secrets', {number: this._random(360), text: "?"});
+                }
+            }
+            
+            change(num){
+                this.current = this.secrets[num].number;
+            }
+            
+            begin(){
+                this.interval = setInterval(() => this.check(), 500);
+                this.shadowRoot.querySelector('#vault').animate([
+                    { transform: 'rotate(0)', color: '#000' }, 
+                    { transform: 'rotate(360deg)', color: '#000' }
+                ], {
+                    duration: 5000,
+                    iterations: Infinity
+                });
+                this.timer = 180;
+                this.intervalTimer = setInterval(() => this.timer--, 1000);
+            }
+            
+            check(){
+                this.feedback = this.$.orientation.alpha;
+                if(this.feedback == this.current && this.count < 3){
+                    if(this.count == 2){
+                        this.$.notification.classList.remove("error");
+                        this.$.notification.classList.add("sucess");
+                        this.notify("Parabéns!!!! Você encontrou todos os segredos e por isso será recompensado com esse tesouro.");
+                        clearInterval(this.intervalTimer);
+                    }
+                    else {
+                        this.$.notification.classList.remove("error");
+                        this.$.notification.classList.add("sucess");
+                        this.notify("Muito bem!! Você encontrou o " + (this.count + 1) + "o segredo.");
+                        
+                    }                   
+                    this.count++;
+                    this.change(this.count);
+                }
+                if(this.count == 3){
+                    clearInterval(this.interval); 
+                    this.image = false;            
+                }
+            }
+            
+            notify(msg){
+                this.secrets[this.count].text = this.secrets[this.count].number;
+                this.$.notification.text = msg;
+                this.$.notification.open();  
+            }
+            
+            
+            _random(size){
+                var max = Math.floor(size-1);
+                return Math.floor(Math.random() * (max - 0 + 1)) + 0;
+            }   
+            
+            getMyOrientation(){
+                this.$.orientation.getOrientation();
+                this.begin();
+                this.$.rotate.disabled = true;
+                this.$.rotate.classList.add("disabled");
+            }
+            
+            reset(){
+                clearInterval(this.interval);
+                clearInterval(this.intervalTimer); 
+                this.begin();
+                this.generateSecrets();
+                this.change(0);
+                this.image = true; 
+            }
+        }
+        window.customElements.define(MyView7.is, MyView7);
+    </script>
+</dom-module>

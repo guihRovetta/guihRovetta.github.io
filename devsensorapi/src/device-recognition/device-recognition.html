@@ -1,0 +1,111 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../user-notification/user-notification.html">
+
+<dom-module id="device-recognition">
+    <template> 
+       <style>
+            .error {
+                --user-notification-border-color: #F44336;
+                --user-notification-color: #FFFFFF;
+                --user-notification-background-color: #F44336;
+            }         
+        </style>
+        <slot></slot>
+        <div>{{text}}</div>
+        
+        <user-notification id="notification" class="error" text="{{error}}"></user-notification>
+    </template>
+    <script>
+        class DeviceRecognition extends Polymer.Element {
+
+            static get is() {
+                return 'device-recognition'
+            }
+
+            static get properties() {
+                return {
+                    language: {
+                        type: String,
+                        notify: true,
+                        reflectToAttribute: true,
+                        observer: '_languageChanged',
+                        value: 'en-US'
+                    },
+                    text: {
+                        type: String,
+                        notify: true,
+                        reflectToAttribute: true,
+                        observer: '_textChanged',
+                        value: ''
+                    },
+                    action: {
+                        type: Boolean,
+                        value: true
+                    }
+                }
+            }
+
+            _languageChanged(newValue, oldValue) {
+                this.language = newValue;
+            }
+
+            _textChanged(newValue, oldValue) {
+                this.text = newValue;
+            }
+
+            constructor() {
+                super();
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+            }
+
+            _toggle() {
+                if (this.action) {
+                    var speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    if (speech !== undefined) {
+                        this.recognition = new speech();
+
+                        this.recognition.continuous = true;
+                        this.recognition.interimResults = false;
+                        this.recognition.lang = this.language;
+
+                        this._start();
+                        this.recognition.addEventListener('result', this._onShow.bind(this), false);
+
+                    } else {
+                        this._onError();
+                    }
+                } else {
+                    this._stop();
+                }
+            }
+
+            _start() {
+                this.recognition.start();
+                this.action = false;
+            }
+
+            _stop() {
+                this.recognition.stop();
+                this.action = true;
+            }
+
+            _onShow(event) {
+                for (var i = event.resultIndex; i < event.results.length; ++i) {
+                    this.text += event.results[i][0].transcript;
+                    event.result = this.text;
+                }
+            }
+            
+            _onError() {
+                console.error('Your browser does not support the Web Speech API');
+                this.$.notification.open();
+            }
+
+        }
+        customElements.define(DeviceRecognition.is, DeviceRecognition);
+
+    </script>
+</dom-module>

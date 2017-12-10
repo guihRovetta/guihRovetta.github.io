@@ -1,0 +1,165 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-view1">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                padding: 10px;
+            }
+
+            .list{
+                color: #FFFFFF;
+                width: 400px;
+            }
+
+            .list h1 {
+                color: #FFFFFF;
+            }
+
+            #red {
+                background-color: #F44336;
+            }
+
+            #pink {
+                background-color: #E91E63;
+            }
+
+            #purple {
+                background-color: #9C27B0;
+            }
+
+            #indigo {
+                background-color: #3F51B5;
+            }
+
+            #blue {
+                background-color: #2196F3;
+            }
+
+            #cyan {
+                background-color: #00BCD4;
+            }
+
+            #teal {
+                background-color: #009688;
+            }
+
+            #green {
+                background-color: #4CAF50;
+            }
+
+            #lime {
+                background-color: #CDDC39;
+            }
+
+            #yellow {
+                background-color: #FFEB3B;
+            }
+
+            #orange {
+                background-color: #FF9800;
+            }
+
+            #brown {
+                background-color: #795548;
+            }
+
+            #grey {
+                background-color: #9E9E9E;
+            }
+            
+            .links {
+                text-decoration: none;
+                color: #FFFFFF;
+            }
+        </style>
+
+        <div class="card page">
+            <h1>CENTRAL - DevSensorAPI</h1>
+            <p>A DevSensorAPI é uma biblioteca de componentes web para a manipulação de sensores em dispositivos móveis desenvolvida por Guilherme Rovetta.</p>
+            <p>Essa aplicação tem como objetivo demonstrar a utilização de todos os componentes desenvolvidos para o trabalho de conclusão de curso de Engenharia da Computação na ETEP Faculdades (Esplanada SJC).</p>
+            <p>Abaixo são exibidas todas as opcões de aplicações e suas respectivas descrições:</p>
+            <div class="container layout horizontal wrap">
+                <template is="dom-repeat" items="{{list}}">
+                    <div class="card list" id="[[item.color]]">
+                        <a href="{{item.link}}" class="links"><h1>{{item.name}}</h1></a>
+                        <p><strong>Descrição:</strong> {{item.description}}</p>
+                        <p><strong>Componente:</strong> {{item.comps}}</p>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        class MyView1 extends Polymer.Element {
+            static get is() {
+                return 'my-view1';
+            }
+            
+            static get properties() {
+                return {
+                    list: {
+                        type: Object,
+                        notify: true,
+                        value: function() {
+                            return [{
+                                    name: 'Cone Pizzas',
+                                    description: 'Mostrar várias filiais de uma rede de quiosques de pizzas espalhados por várias cidades, utilizando as coordenadas do GPS do dispositivo móvel e mostrando no mapa a localização e distância até determinado quiosque em relação à posição do usuário.',
+                                    comps: 'device-geolocation',
+                                    color: 'red',
+                                    link: '../view2'
+                                },
+                                {
+                                    name: 'Onde Está Wally?',
+                                    description: 'Mostrar o uso das notificações de vibração através de um jogo em que o objetivo é encontrar um determinado elemento0. Desse modo, ao encontrá-lo o usuário será notificado através de um padrão de vibração que pode ser programado.',
+                                    comps: 'device-vibration',
+                                    color: 'pink',
+                                    link: '../view3'
+                                },
+                                {
+                                    name: 'GOTSpoilers',
+                                    description: 'Mostrar o uso da transformação de texto em voz de acordo com o idioma pré-determinado, isso através de uma página com textos que serão "lidos" sobre cada episódio de uma série de TV. Para ilustrar o que está sendo lido, há imagens dos acontecimentos.',
+                                    comps: 'device-synthesis',
+                                    color: 'purple',
+                                    link: '../view4'
+                                },
+                                    {
+                                    name: 'CANTARes',
+                                    description: 'Mostrar o uso do reconhecimento de voz transformando em texto de acordo com o idioma pré-determinado, isso através de uma página em que o usuário deve pronunciar uma determinada sequência de palavras e aplicação fará a comparação do que era esperado e do que foi obtido.',
+                                    comps: 'device-recognition',
+                                    color: 'indigo',
+                                    link: '../view5'
+                                },
+                                {
+                                    name: 'tGLN',
+                                    description: 'Mostrar o uso dos sensores de movimento do dispositivo em relação aos 3 eixos, demonstrando através de uma página que mostra as noticias mais recentes do jornal theGuardian em que o usuário pode passar de noticia apenas movimentando o celular.',
+                                    comps: 'device-acceleration',
+                                    color: 'blue',
+                                    link: '../view6'
+                                },
+                                {
+                                    name: 'Safe Lock',
+                                    description: 'Mostrar o uso da orientação do dispositivo de acordo com sua posição, isso através de um jogo em que o objetivo é encontrar 3 segredos do cofre movendo o celular como se tivesse acessando realmente um cofre.',
+                                    comps: 'device-orientation',
+                                    color: 'cyan',
+                                    link: '../view7'
+                                },
+                                {
+                                    name: 'Find Who?',
+                                    description: 'Mostrar o uso das coordenadas (x e y) de acordo com o local onde o usuário tocou ou clicou na tela, isso através de um jogo em que o objetivo é encontrar determinado personagem na tela clicando no local correto.',
+                                    comps: 'device-pointer',
+                                    color: 'teal',
+                                    link: '../view8'
+                                }
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+        window.customElements.define(MyView1.is, MyView1);
+    </script>
+</dom-module>

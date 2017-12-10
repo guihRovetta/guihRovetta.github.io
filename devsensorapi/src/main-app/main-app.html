@@ -1,0 +1,266 @@
+<!-- Polymer Components--><link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html">
+
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
+
+<!-- Views Components-->
+<link rel="lazy-import" href="my-view1.html">
+<link rel="lazy-import" href="my-view2.html">
+<link rel="lazy-import" href="my-view3.html">
+<link rel="lazy-import" href="my-view4.html">
+<link rel="lazy-import" href="my-view5.html">
+<link rel="lazy-import" href="my-view6.html">
+<link rel="lazy-import" href="my-view7.html">
+<link rel="lazy-import" href="my-view8.html">
+<link rel="lazy-import" href="my-view404.html">
+
+<dom-module id="main-app">
+    <template>
+        <style>
+            :host {
+                --app-primary-color: #1A237E;
+                --app-secondary-color: #FF9800;
+                --app-tertiary-color: #ffffff;
+                display: block;
+            }
+            
+            app-header {
+                color: #fff;
+                background-color: var(--app-primary-color);
+                position: fixed;
+                width: 100%;
+                z-index: 100;
+            }
+
+            app-header paper-icon-button {
+                --paper-icon-button-ink-color: white;
+            }
+
+            .drawer-list {
+                margin: 0 20px;
+            }
+
+            .drawer-list a {
+                display: block;
+                padding: 0 16px;
+                text-decoration: none;
+                color: black;
+                line-height: 40px;
+            }
+
+            .drawer-list a.iron-selected {
+                color: var(--app-secondary-color);
+                font-weight: bold;
+            }
+            
+            .toolbar-list a {
+                padding: 0 16px;
+                text-decoration: none;
+                color: var(--app-tertiary-color);
+            }
+
+            .toolbar-list a.iron-selected {
+                color: var(--app-secondary-color);
+                font-weight: bold;
+            }
+            
+            .success {
+                border: 2px solid;
+                border-color: #4CAF50;
+                color: #FFFFFF;
+                background-color: #4CAF50;
+                position: fixed;
+                bottom: 6px;
+                right: 6px;
+            }
+            
+            paper-tabs {
+                --paper-tabs-selection-bar-color: var(--app-secondary-color);
+            }
+            
+            paper-tab a {
+                display: block;
+                padding: 0 16px;
+                text-decoration: none;
+                color: var(--app-tertiary-color);
+                line-height: 50px;
+            }
+            
+            #divtab {
+                width: 100%;
+                text-align: center;
+            }           
+        </style>
+        
+        <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
+        <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
+
+        <app-header reveals="">
+            <app-toolbar>
+                <paper-icon-button id="menu" icon="icons:menu" drawer-toggle="" hidden$="{{responsive}}"></paper-icon-button>
+                <div main-title="">[[title]]</div>
+                <div hidden$="{{!responsive}}" id="divtab">
+                    <paper-tabs selected="0" role="navigation" scrollable="" fit-container="">
+                        <template is="dom-repeat" items="{{links}}">
+                            <paper-tab link="">
+                                <a name="{{item.url}}" href="[[rootPath]]{{item.url}}">{{item.name}}</a>
+                            </paper-tab>
+                        </template>
+                    </paper-tabs>
+                </div>             
+            </app-toolbar>
+        </app-header>
+
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
+            <my-view1 name="view1"></my-view1>
+            <my-view2 name="view2"></my-view2>
+            <my-view3 name="view3"></my-view3>
+            <my-view4 name="view4"></my-view4>
+            <my-view5 name="view5"></my-view5>
+            <my-view6 name="view6"></my-view6>
+            <my-view7 name="view7"></my-view7>
+            <my-view8 name="view8"></my-view8>
+            <my-view404 name="view404"></my-view404>
+        </iron-pages>
+
+        <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
+            <app-toolbar>Menu</app-toolbar>
+            <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                <template is="dom-repeat" items="{{links}}">
+                    <a name="{{item.url}}" href="[[rootPath]]{{item.url}}">{{item.name}}</a>
+                </template>
+            </iron-selector>
+        </app-drawer>
+        
+        <paper-dialog id="welcome" class="success">
+            <h2>Olá, bem vindo!</h2>
+            <p>Para uma melhor experiência, utilize o browser Google Chrome!</p>
+        </paper-dialog>
+
+        <iron-media-query query="min-width: 600px" query-matches="{{responsive}}"></iron-media-query>
+    </template>
+
+    <script>
+        class MainApp extends Polymer.Element {
+            static get is() {
+                return 'main-app';
+            }
+
+            static get properties() {
+                return {
+                    title: {
+                        type: String,
+                        value: 'DevSensorAPI'
+                    },
+                    links: {
+                        type: Object,
+                        notify: true,
+                        value: function() {
+                            return [{
+                                    name: 'Home',
+                                    url: 'view1'
+                                },
+                                {
+                                    name: 'Cone Pizzas',
+                                    url: 'view2'
+                                },
+                                {
+                                    name: 'Onde está Wally?',
+                                    url: 'view3'
+                                },
+                                {
+                                    name: 'GOTSpoilers',
+                                    url: 'view4'
+                                },
+                                {
+                                    name: 'CANTARes',
+                                    url: 'view5'
+                                },
+                                {
+                                    name: 'tGLN',
+                                    url: 'view6'
+                                },
+                                    {
+                                    name: 'Safe Lock',
+                                    url: 'view7'
+                                },
+                                {
+                                    name: 'Find who?',
+                                    url: 'view8'
+                                }
+                            ];
+                        }
+                    },
+                    responsive: {
+                        type: Boolean,
+                        value: false
+                    },
+                    page: {
+                        type: String,
+                        reflectToAttribute: true,
+                        observer: '_pageChanged',
+                    },
+                    routeData: Object,
+                    subroute: String,
+                    rootPath: String,
+                };
+            }
+
+            static get observers() {
+                return [
+                    '_routePageChanged(routeData.page)',
+                ];
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                this.$.menu.addEventListener('click', e => this._toggle(e));
+                this.$.welcome.open();
+                setTimeout(() => this.$.welcome.close(), 7000);
+            }
+            
+            _toggle(event) {
+                this.$.drawer.toggle();               
+            }
+
+            _routePageChanged(page) {
+                // If no page was found in the route data, page will be an empty string.
+                // Default to 'view1' in that case.
+                this.page = page || 'view1';
+
+                // Close a non-persistent drawer when the page & route are changed.
+                if (!this.$.drawer.persistent) {
+                    this.$.drawer.close();
+                }
+            }
+
+            _pageChanged(page) {
+                // Load page import on demand. Show 404 page if fails
+                var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
+                Polymer.importHref(
+                    resolvedPageUrl,
+                    null,
+                    this._showPage404.bind(this),
+                    true);
+            }
+
+            _showPage404() {
+                this.page = 'view404';
+            }
+        }
+        window.customElements.define(MainApp.is, MainApp);
+
+    </script>
+</dom-module>

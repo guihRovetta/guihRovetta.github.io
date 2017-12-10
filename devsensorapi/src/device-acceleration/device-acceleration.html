@@ -1,0 +1,168 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../user-notification/user-notification.html">
+
+<dom-module id="device-acceleration">
+    <template>  
+        <style>
+            .error {
+                --user-notification-border-color: #F44336;
+                --user-notification-color: #FFFFFF;
+                --user-notification-background-color: #F44336;
+            }
+        </style>         
+        <slot></slot>    
+        <user-notification id="notification" class="error" text="{{error}}"></user-notification>
+    </template>
+    <script>
+        class DeviceAcceleration extends Polymer.Element {
+
+            static get is() {
+                return 'device-acceleration'
+            }
+
+            static get properties() {
+                return {
+                    ax: {
+                        type: Number,
+                        notify: true,
+                        observer: '_axChanged',
+                        reflectToAttribute: true,
+                        value: 0
+                    },
+                    ay: {
+                        type: Number,
+                        notify: true,
+                        observer: '_ayChanged',
+                        reflectToAttribute: true,
+                        value: 0
+                    },
+                    az: {
+                        type: Number,
+                        notify: true,
+                        observer: '_azChanged',
+                        reflectToAttribute: true,
+                        value: 0
+                    },
+                    agx: {
+                        type: Number,
+                        notify: true,
+                        observer: '_agxChanged',
+                        reflectToAttribute: true,
+                        value: 0
+                    },
+                    agy: {
+                        type: Number,
+                        notify: true,
+                        observer: '_agyChanged',
+                        reflectToAttribute: true,
+                        value: 0
+                    },
+                    agz: {
+                        type: Number,
+                        notify: true,
+                        observer: '_agzChanged',
+                        reflectToAttribute: true,
+                        value: 0
+                    },
+                    rotx: {
+                        type: Number,
+                        notify: true,
+                        observer: '_rotxChanged',
+                        reflectToAttribute: true,
+                        value: 0
+                    },
+                    roty: {
+                        type: Number,
+                        notify: true,
+                        observer: '_rotyChanged',
+                        reflectToAttribute: true,
+                        value: 0
+                    },
+                    rotz: {
+                        type: Number,
+                        notify: true,
+                        observer: '_rotzChanged',
+                        reflectToAttribute: true,
+                        value: 0
+                    },
+                    interval: {
+                        type: Number,
+                        notify: true,
+                        observer: '_intervalChanged',
+                        reflectToAttribute: true,
+                        value: 0
+                    }
+                }
+            }
+
+            _axChanged(newValue, oldValue) {
+                this.ax = Math.round(newValue);
+            }
+
+            _ayChanged(newValue, oldValue) {
+                this.ay = Math.round(newValue);
+            }
+
+            _azChanged(newValue, oldValue) {
+                this.az = Math.round(newValue);
+            }
+
+            _agxChanged(newValue, oldValue) {
+                this.agx = Math.round(newValue);
+            }
+
+            _agyChanged(newValue, oldValue) {
+                this.agy = Math.round(newValue);
+            }
+
+            _agzChanged(newValue, oldValue) {
+                this.agz = Math.round(newValue);
+            }
+
+            _rotxChanged(newValue, oldValue) {
+                this.rotx = Math.round(newValue);
+            }
+
+            _rotyChanged(newValue, oldValue) {
+                this.roty = Math.round(newValue);
+            }
+
+            _rotzChanged(newValue, oldValue) {
+                this.rotz = Math.round(newValue);
+            }
+            
+            _intervalChanged(newValue, oldValue) {
+                this.interval = newValue;
+            }
+
+            constructor() {
+                super();
+            }
+
+            getMotion() {
+                var isMobile = /Android|webOS|iPhone|iPad|BlackBerry|Windows Phone|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent);
+                if (window.DeviceMotionEvent && isMobile) {
+                    window.addEventListener('devicemotion', this._onShow.bind(this), false);
+                } else {
+                    console.log("Your device doesn't support this feature");
+                    this.$.notification.open();
+                }           
+            }
+
+            _onShow(event) {
+                this.ax = event.acceleration.x;
+                this.ay = event.acceleration.y;
+                this.az = event.acceleration.z;
+                this.agx = event.accelerationIncludingGravity.x;
+                this.agy = event.accelerationIncludingGravity.y;
+                this.agz = event.accelerationIncludingGravity.z;
+                this.rotx = event.rotationRate.alpha;
+                this.roty = event.rotationRate.beta;
+                this.rotz = event.rotationRate.gamma;
+                this.interval = event.interval;
+            }
+        }
+        customElements.define(DeviceAcceleration.is, DeviceAcceleration);
+
+    </script>
+</dom-module>

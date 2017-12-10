@@ -1,0 +1,317 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../device-acceleration/device-acceleration.html">
+<link href="https://fonts.googleapis.com/css?family=Vollkorn+SC" rel="stylesheet">
+
+<dom-module id="my-view6">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                padding: 10px;
+                background: #009688;
+            }
+            
+            .divLimit {
+                max-width: 900px;
+                width: 100%;
+            }
+            
+            .links {
+                text-decoration: none;
+                color: #009688;
+                font-weight: bold;
+            }        
+            
+            .control {
+                color: #FFFFFF;
+                background-color: #009688;
+                margin: 10px;
+            }
+            
+            .header { 
+                @apply --paper-font-headline; 
+                color: #111111;
+                font-weight: bold;
+                text-align: center;
+            }
+            
+            .secondary { 
+                color: var(--paper-grey-800); 
+                margin: 10px 0; 
+                text-align: center;
+            }
+            
+            .terciary { 
+                color: var(--paper-grey-500); 
+                font-size: 90%;
+                text-align: center;
+            }
+            
+            .body {
+                margin: 10px 0 10px 0;
+            }
+            
+            #progress {               
+                width: 100%;
+                margin-bottom: 10px;
+                --paper-progress-active-color: #009688;
+            }
+            
+            .disabled {
+                visibility: hidden;
+            }
+            
+            h1,h2 {
+                font-family: 'Vollkorn SC', serif;
+                text-align: center;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+        </style>
+
+        <div class="page horizontal center layout">
+            <div class="flex positioning vertical center layout">
+                <div class="card divLimit layout center-justified">       
+                    <h1>theguardian Last News</h1>
+                    <p>Bem-vindo ao theguardian Last News, uma aplicação que mostra as últimas noticias obtidas do jornal theguardian. Para trocar de notícia, basta fazer o movimento com o celular para direita ou esquerda, para avançar ou voltar respectivamente. Para atualizar a página o usuário pode inclinar o dispositivo para baixo e para ver a notícia completa basta inclinar o celular para frente.</p>
+                    <p>Para poder usufruir desses gestos, o usuário deve permitir o acesso clicando no botão logo abaixo:</p>
+                    <div class="container layout vertical center">
+                        <paper-button raised="" class="control" id="motion" on-click="getMyMotion"><iron-icon icon="icons:swap-horiz"></iron-icon></paper-button>
+                    </div>                       
+                    <device-acceleration id="acceleration"></device-acceleration> 
+                </div>
+
+                <div class="card divLimit container layout vertical">
+                    <div class="container layout vertical center wrap">
+                        <paper-progress indeterminate="" id="progress"></paper-progress>
+                        <div class="header">{{title}}</div>
+                        <div class="secondary">{{trail}}</div>
+                        <div class="terciary">By: {{byline}}, theguardian</div>
+                        <div class="terciary">{{publication}} - {{type}} / {{section}}</div>
+                        <div class="body">{{text}}</div>                       
+                        <div>To see the complete news, click on this link: <a href="{{url}}" class="links">HERE</a></div> 
+                        <iron-ajax id="ajaxtext" auto="" url="https://content.guardianapis.com/search?" params="{&quot;show-fields&quot;:&quot;all&quot;, &quot;page-size&quot;:&quot;5&quot;, &quot;api-key&quot;: &quot;3acc0f24-e459-4dff-bb96-e3339e641a38&quot;}" handle-as="json" last-response="{{ajaxResponse}}" on-response="textResponse">
+                        </iron-ajax>
+                    </div>                          
+                </div>
+
+                <div class="card divLimit layout center-justified">       
+                    <h2>Referências - API utilizada</h2>
+                    <p>A API utilizada e as notícias aqui exibidas pertencem ao site <a href="https://www.theguardian.com/international" class="links">theGuardian</a> e a API pode ser acessada <a href="http://open-platform.theguardian.com/" class="links">aqui</a> e foram usadas apenas para fins acadêmicos.</p>     
+                </div>   
+            </div>
+        </div>            
+  </template>
+
+    <script>
+        class MyView6 extends Polymer.Element {
+            static get is() {
+                return 'my-view6';
+            }
+            
+            static get properties() {
+                return {
+                    type: {
+                        type: String,
+                        notify: true,
+                        observer: '_typeChanged',
+                        reflectToAttribute: true,
+                        value: ''
+                    },
+                    section: {
+                        type: String,
+                        notify: true,
+                        observer: '_sectionChanged',
+                        reflectToAttribute: true,
+                        value: ''
+                    },
+                    publication: {
+                        type: String,
+                        notify: true,
+                        observer: '_publicationChanged',
+                        reflectToAttribute: true,
+                        value: ''
+                    },
+                    title: {
+                        type: String,
+                        notify: true,
+                        observer: '_titleChanged',
+                        reflectToAttribute: true,
+                        value: ''
+                    },
+                    url: {
+                        type: String,
+                        notify: true,
+                        observer: '_urlChanged',
+                        reflectToAttribute: true,
+                        value: ''
+                    },
+                    trail: {
+                        type: String,
+                        notify: true,
+                        observer: '_trailChanged',
+                        reflectToAttribute: true,
+                        value: ''
+                    },
+                    byline: {
+                        type: String,
+                        notify: true,
+                        observer: '_bylineChanged',
+                        reflectToAttribute: true,
+                        value: ''
+                    },
+                    text: {
+                        type: String,
+                        notify: true,
+                        observer: '_textChanged',
+                        reflectToAttribute: true,
+                        value: ''
+                    },
+                    count: {
+                        type: Number,
+                        notify: true,
+                        observer: '_countChanged',
+                        reflectToAttribute: true,
+                        value: 0
+                    },
+                    news: {
+                        type: Object,
+                        notify: true,
+                        value: function() {
+                            return [];
+                        },
+                        observer: '_newsChanged'
+                    },
+                };
+            }
+            
+            _typeChanged(newValue, oldValue) {
+                this.type = newValue;
+            }
+            
+            _sectionChanged(newValue, oldValue) {
+                this.section = newValue;
+            }
+            
+            _publicationChanged(newValue, oldValue) {
+                this.publication = newValue;
+            }
+            
+            _titleChanged(newValue, oldValue) {
+                this.title = newValue;
+            }
+            
+            _urlChanged(newValue, oldValue) {
+                this.url = newValue;
+            }
+            
+            _trailChanged(newValue, oldValue) {
+                this.trail = newValue;
+            }
+            
+            _bylineChanged(newValue, oldValue) {
+                this.byline = newValue;
+            }
+            
+            _textChanged(newValue, oldValue) {
+                this.text = newValue;
+            }
+            
+            _countChanged(newValue, oldValue) {
+                this.count = newValue;
+            }
+            
+            _newsChanged(newValue, oldValue) {
+                this.news = newValue;
+            }
+            
+            constructor() {
+                super();
+                this.begin();
+            }
+            
+            connectedCallback() {
+                super.connectedCallback();                
+            }  
+            
+            textResponse(){
+                this.$.progress.disabled = true;
+                this.$.progress.classList.add("disabled");
+                this.news = this.ajaxResponse.response.results;
+                this.change(0);
+            }
+            
+            change(num){
+                this.type = this.news[num].type;
+                this.section = this.news[num].sectionName;
+                this.publication = this.formate(this.news[num].webPublicationDate);
+                this.title = this.news[num].webTitle;
+                this.url = this.news[num].webUrl;
+                this.trail = this.news[num].fields.trailText;
+                this.byline = this.news[num].fields.byline;
+                this.text = this.summarize(this.news[num].fields.bodyText);
+            }
+            
+            summarize(str){
+                var original = str.split(" ");
+                var final = "";
+                var size = Math.floor((original.length) / 3);
+                for(var i = 0; i < size; i++){
+                    if(i == 300){
+                        break;
+                    } 
+                    else {
+                        final += original[i] + " ";
+                    }                   
+                }   
+                final += " ...";
+                return final;
+            }
+            
+            formate(timestamp){
+                var date = new Date(timestamp) + "";
+                var v = date.split(" ");
+                var formated = v[2] + "/" + v[1] + "/" + v[3] + " - " +v[4];
+                return formated;
+            }
+            
+            
+            begin(){
+                setInterval(() => this.check(), 800);
+            }
+            
+            search(param){
+                this.$.ajaximage.generateRequest();
+            }
+            
+            check(){
+                if(this.$.acceleration.agx >= 5 && this.count > 0){
+                    this.count--;
+                    this.change(this.count);                    
+                }
+                else if(this.$.acceleration.agx <= -5 && this.count < (this.news.length - 1)){                    
+                    this.count++;
+                    this.change(this.count);
+                }
+                else if(this.$.acceleration.agy <= -3){
+                    window.location.href = this.url;    
+                } 
+                else if(this.$.acceleration.agz <= -3){
+                    location.reload();   
+                }
+            }
+            
+            getMyMotion(){
+                this.$.acceleration.getMotion();
+            }
+        }
+        window.customElements.define(MyView6.is, MyView6);
+    </script>
+</dom-module>

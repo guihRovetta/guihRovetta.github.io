@@ -1,0 +1,167 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../user-notification/user-notification.html">
+
+<dom-module id="device-synthesis">
+    <template> 
+        <style>
+            .error {
+                --user-notification-border-color: #F44336;
+                --user-notification-color: #FFFFFF;
+                --user-notification-background-color: #F44336;
+            }
+        </style>        
+        <slot></slot>
+        
+        <user-notification id="notification" class="error" text="{{error}}"></user-notification>
+    </template>
+    <script>
+        class DeviceSynthesis extends Polymer.Element {
+
+            static get is() {
+                return 'device-synthesis'
+            }
+
+            static get properties() {
+                return {
+                    language: {
+                        type: String,
+                        notify: true,
+                        reflectToAttribute: true,
+                        observer: '_languageChanged',
+                        value: 'en-US'
+                    },
+                    text: {
+                        type: String,
+                        notify: true,
+                        reflectToAttribute: true,
+                        observer: '_textChanged',
+                        value: 'The Winter is Coming'
+                    },
+                    volume: {
+                        type: Number,
+                        notify: true,
+                        reflectToAttribute: true,
+                        observer: '_volumeChanged',
+                        value: 1
+                    },
+                    rate: {
+                        type: Number,
+                        notify: true,
+                        reflectToAttribute: true,
+                        observer: '_rateChanged',
+                        value: 1
+                    },
+                    pitch: {
+                        type: Number,
+                        notify: true,
+                        reflectToAttribute: true,
+                        observer: '_pitchChanged',
+                        value: 1
+                    },
+                    action: {
+                        type: Boolean,
+                        value: true
+                    },
+                    langs: {
+                        type: Object,
+                        notify: true,
+                        reflectToAttribute: true,
+                        value: function() {
+                            return [this.language]
+                        },
+                        observer: '_langsChanged'
+                    },
+                    options: {
+                        type: Boolean,
+                        value: false
+                    },
+                }
+            }
+
+            _languageChanged(newValue, oldValue) {
+                this.language = newValue;
+            }
+
+            _textChanged(newValue, oldValue) {
+                this.text = newValue;
+            }
+
+            _langsChanged(newValue, oldValue) {
+                this.langs = newValue;
+            }
+            
+            _volumeChanged(newValue, oldValue) {
+                this.volume = newValue;
+            }
+            
+            _rateChanged(newValue, oldValue) {
+                this.rate = newValue;
+            }
+            
+            _pitchChanged(newValue, oldValue) {
+                this.pitch = newValue;
+            }
+
+            constructor() {
+                super();
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+            }
+            
+            _begin(){
+                if ('speechSynthesis' in window) {
+                    this.synthesis = new SpeechSynthesisUtterance();
+                    this.synthesis.lang = this.language;
+                    this.synthesis.text = this.text;
+                    this.synthesis.volume = this.volume;
+                    this.synthesis.rate = this.rate;
+
+                    if (this.langs.length < 23) {
+                        this._populate();
+                    }
+                } else {
+                    this._onError();
+                }
+            }
+
+            _start() {
+                window.speechSynthesis.speak(this.synthesis);
+                this.action = false;
+            }
+
+            _stop() {
+                window.speechSynthesis.cancel();
+                this.action = true;
+            }
+            
+            _pause() {
+                window.speechSynthesis.pause();
+            }
+            
+            _resume() {
+                window.speechSynthesis.resume();
+            }
+            
+            _onError() {
+                console.error('Your browser does not support the Web Speech API');
+                this.$.notification.open();
+            }
+
+            _changeLanguage(event) {
+                this.language = event;
+                this.synthesis.lang = this.language;
+            }
+
+            _populate() {
+                var voices = window.speechSynthesis.getVoices();
+                for (var i = 0; i < voices.length; i++) {
+                    this.push('langs', voices[i].lang);
+                }
+            }
+        }
+        customElements.define(DeviceSynthesis.is, DeviceSynthesis);
+
+    </script>
+</dom-module>
