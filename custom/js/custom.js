@@ -153,102 +153,87 @@ $(document).ready(function () {
     }, {
         titulo: "Goblins",
         imagem: "../img/goblins.png",
-        preco: 90,
+        preco: 60,
         tipo: "Mascot"
     }, {
         titulo: "Mamba",
         imagem: "../img/mamba.png",
-        preco: 75,
-        tipo: "Mascot"
-    }, {
-        titulo: "Undead",
-        imagem: "../img/undead.png",
-        preco: 60,
+        preco: 65,
         tipo: "Mascot"
     }, {
         titulo: "Aliens",
         imagem: "../img/aliens.png",
-        preco: 75,
-        tipo: "Mascot"
-    }, {
-        titulo: "Divers",
-        imagem: "../img/divers.png",
-        preco: 70,
+        preco: 55,
         tipo: "Mascot"
     }, {
         titulo: "Zombies",
         imagem: "../img/zombies.png",
-        preco: 75,
+        preco: 60,
         tipo: "Mascot"
     }, {
         titulo: "Cowboy",
         imagem: "../img/cowboy.png",
-        preco: 60,
+        preco: 40,
         tipo: "Mascot"
     }, {
         titulo: "Genie",
         imagem: "../img/genie.png",
-        preco: 45,
+        preco: 22,
         tipo: "Mascot"
     }, {
         titulo: "Jaguar",
         imagem: "../img/jaguar.png",
-        preco: 55,
+        preco: 35,
         tipo: "Mascot"
     }, {
         titulo: "Bunny",
         imagem: "../img/bunny.png",
-        preco: 50,
+        preco: 25,
         tipo: "Mascot"
     }, {
         titulo: "Unicorn",
         imagem: "../img/unicorn.png",
-        preco: 55,
+        preco: 45,
         tipo: "Mascot"
     }, {
         titulo: "Hunter",
         imagem: "../img/hunter.png",
-        preco: 60,
+        preco: 45,
         tipo: "Mascot"
     }, {
         titulo: "Boar",
         imagem: "../img/boar.png",
-        preco: 55,
+        preco: 35,
         tipo: "Mascot"
     }, {
         titulo: "Executioner",
         imagem: "../img/executioner.png",
-        preco: 45,
+        preco: 30,
         tipo: "Mascot"
     }, {
         titulo: "Monkeys",
         imagem: "../img/monkeys.png",
-        preco: 60,
+        preco: 80,
         tipo: "Mascot"
     }, {
         titulo: "Fox",
         imagem: "../img/fox.png",
-        preco: 45,
+        preco: 20,
         tipo: "Mascot"
     }, {
         titulo: "Sorcerer",
         imagem: "../img/sorcerer.png",
-        preco: 55,
-        tipo: "Mascot"
-    }, {
-        titulo: "Spartan",
-        imagem: "../img/spartan_new.png",
-        preco: 50,
+        preco: 70,
         tipo: "Mascot"
     }, {
         titulo: "Astronaut",
         imagem: "../img/astronaut.png",
-        preco: 45,
+        preco: 25,
         tipo: "Mascot"
     }, {
         titulo: "Eagles",
         imagem: "../img/eagles.png",
-        preco: 50,
+        preco: 30,
         tipo: "Mascot"
     }, {
         titulo: "Raptors",
@@ -258,22 +243,17 @@ $(document).ready(function () {
     }, {
         titulo: "Witch Doctor",
         imagem: "../img/witch_doctor.png",
-        preco: 50,
-        tipo: "Mascot"
-    }, {
-        titulo: "Tank",
-        imagem: "../img/tank.png",
-        preco: 40,
+        preco: 60,
         tipo: "Mascot"
     }, {
         titulo: "Pharaohs",
         imagem: "../img/pharaohs.png",
-        preco: 45,
+        preco: 15,
         tipo: "Mascot"
     }, {
         titulo: "Pirates",
         imagem: "../img/pirates.png",
-        preco: 40,
+        preco: 50,
         tipo: "Mascot"
     }];
 
@@ -370,4 +350,6 @@ $(document).ready(function () {
         .dropdown({
             action: 'hide'
         });
+    
+    $('.skill').progress();
 });
